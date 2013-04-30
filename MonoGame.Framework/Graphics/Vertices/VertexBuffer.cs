@@ -26,7 +26,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
 #if DIRECTX
         internal SharpDX.Direct3D11.VertexBufferBinding _binding;
-        protected SharpDX.Direct3D11.Buffer _buffer;
+        internal SharpDX.Direct3D11.Buffer _buffer;
 #elif PSM
         internal Array _vertexArray;
 #else

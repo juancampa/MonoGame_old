@@ -21,7 +21,7 @@ namespace Microsoft.Xna.Framework.Graphics
 #if WINRT
         [DataMember]
 #endif
-		public VertexElementColor Color;
+		public Color Color;
 
 		public static readonly VertexDeclaration VertexDeclaration;
 

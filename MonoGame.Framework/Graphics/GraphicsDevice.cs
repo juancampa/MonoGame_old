@@ -80,6 +80,7 @@ using Windows.UI.Core;
 using SharpDX.DXGI;
 #elif WINDOWS
 using SharpDX.DXGI;
+using SharpDX.Direct3D11;
 #endif
 #elif PSM
 using Sce.PlayStation.Core.Graphics;
@@ -106,6 +107,7 @@ namespace Microsoft.Xna.Framework.Graphics
         private Rectangle _scissorRectangle;
         private bool _scissorRectangleDirty;
   
+        private VertexBufferBinding _vertexBufferBinding;
         private VertexBuffer _vertexBuffer;
         private bool _vertexBufferDirty;
 
@@ -1856,12 +1858,25 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void SetVertexBuffer(VertexBuffer vertexBuffer)
         {
-            if (_vertexBuffer == vertexBuffer)
-                return;
-
+            if (vertexBuffer != null)
+                _vertexBufferBinding = new VertexBufferBinding(vertexBuffer._buffer, vertexBuffer.VertexDeclaration.VertexStride, 0);
+            else
+                _vertexBufferBinding = new VertexBufferBinding(null, 0, 0);
             _vertexBuffer = vertexBuffer;
             _vertexBufferDirty = true;
+
         }
+
+        public void SetVertexBuffer(VertexBuffer vertexBuffer, int vertexOffset)
+        {
+            if (vertexBuffer != null)
+                _vertexBufferBinding = new VertexBufferBinding(vertexBuffer._buffer, vertexBuffer.VertexDeclaration.VertexStride, vertexOffset);
+            else
+                _vertexBufferBinding = new VertexBufferBinding(null, 0, 0);
+             _vertexBuffer = vertexBuffer;
+             _vertexBufferDirty = true;
+         }
+
 
         private void SetIndexBuffer(IndexBuffer indexBuffer)
         {
@@ -2044,8 +2059,8 @@ namespace Microsoft.Xna.Framework.Graphics
             if (_vertexBufferDirty)
             {
 #if DIRECTX
-                if (_vertexBuffer != null)
-                    _d3dContext.InputAssembler.SetVertexBuffers(0, _vertexBuffer._binding);
+                if (_vertexBufferBinding.Buffer != null)
+                    _d3dContext.InputAssembler.SetVertexBuffers(0, _vertexBufferBinding);
                 else
                     _d3dContext.InputAssembler.SetVertexBuffers(0);
 #elif OPENGL
